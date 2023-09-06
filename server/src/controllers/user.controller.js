@@ -1,3 +1,5 @@
+import User from "../models/user.model.js"
+
 const getUsers = (req, res) => {
     res.send('<h3>Hola Mundo</h3>')
 }
