@@ -6,12 +6,8 @@ const dbConnect = () => {
 
     // > Sin Promesa 
     connect(DB_URI)
-        .then(() => {
-            console.log('****** DB connection successful ******')
-        })
-        .catch((error) => {
-            console.log('****** DB connection failed ******')
-        })
+        .then(() => { console.log('****** DB connection successful ******') })
+        .catch((error) => { console.log('****** DB connection failed ******') });
 
     // > Con Promesa 
     /*return new Promise((resolve, reject) => {

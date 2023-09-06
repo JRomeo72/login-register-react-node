@@ -16,8 +16,13 @@ const userSchema = new Schema({
         required: true,
         unique: true
     }
+},{
+    timestamps: true,
+    versionKey: false
 });
 
-let User = model('User', userSchema);
+// let User = model('User', userSchema);
 
-export default User
+// export default User
+
+export default model('User', userSchema)

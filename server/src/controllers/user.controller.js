@@ -1,7 +1,9 @@
 import User from "../models/user.model.js"
 
-const getUsers = (req, res) => {
-    res.send('<h3>Hola Mundo</h3>')
+const getUsers = async (req, res) => {
+
+    let users = await User.find({})
+    res.json(users)
 }
 
 let userCtr = {
