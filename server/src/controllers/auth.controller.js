@@ -1,11 +1,11 @@
 import User from '../models/user.model.js';
-import encryptPass from '../libs/bcrypt.js';
-import getToken from '../libs/jwtoken.js';
+import { encryptPass, comparePassword } from '../libs/bcrypt.js';
+import { createToken } from '../libs/jwtoken.js';
 
-
+// > REGISTER 
 const register = async (req, res) => {
-    let { username, email, password } = req.body;
     let secretKey = process.env.JWT_SECRET_KEY;
+    let { username, email, password } = req.body;
 
     try {
 
@@ -25,24 +25,54 @@ const register = async (req, res) => {
             email: userSaved.email, 
         };
 
-        let token = await getToken(showUserSaved, secretKey);
-            // .then(token => console.log(token))
-            // .catch(err => console.log(err));
-        
-        console.log(`Token: ${token}`)
-        
-        res.send({"message": "Usuario ingresado", "New User": showUserSaved})
+        console.log(showUserSaved)
+
+        let token = await createToken(showUserSaved, secretKey);
+        // .then(token => console.log(token))
+        // .catch(err => console.log(err));
+
+        res.cookie('token', token);
+        res.send({"message": "User crated successfully", "New User": showUserSaved})
 
     } catch (error) {
-        res.send({message: "Error en el proceso"})
+        res.status(500).send({message: "Error en el proceso", error})
     }
 };
 
+// > LOGIN 
 const login = async (req, res) => {
+    let secretKey = process.env.JWT_SECRET_KEY;
     let { email, password } = req.body;
-    res.send({email, password})
+
+    try {
+        let userFound = await User.findOne({email});
+        if(!userFound) return res.status(400).send({message: "Usuario no encontrado"});
+    
+        let isMatch = await comparePassword(password, userFound.password);
+        if(!isMatch) return res.status(400).send({message: "Credenciales incorrectas"});
+
+        let userMatch = {
+            id: userFound._id,
+            username: userFound.username,
+            email: userFound.email
+        };
+
+        let token = await createToken(userMatch, secretKey);
+
+        res.cookie('token', token);
+        res.send({"message": "Usuario Logeado", "New User": userMatch})
+    } catch (error) {
+        res.status(500).send({message: "Error en el proceso", error})
+    }
+    
 };
 
-let authCtr = { register, login };
+//> LOGOUT 
+const logout = (req, res) => {
+    res.cookie('token', "", { expires: new Date(0) });
+    res.status(200).send({message: "User Logout"})
+}
+
+let authCtr = { register, login, logout };
 
 export default authCtr

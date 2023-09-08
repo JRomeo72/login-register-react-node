@@ -1,13 +1,18 @@
 import User from "../models/user.model.js"
 
-const getUsers = async (req, res) => {
+// > User Profile 
+const profile = async (req, res) => {
 
-    let users = await User.find({})
-    res.json(users)
-}
+    let { user } = req;
+    let userFound = await User.findById(user.id);
+    if(!userFound) return res.status(400).send({message: "User not found"});
+
+    console.log(userFound)
+    res.send(userFound)
+};
 
 let userCtr = {
-    getUsers
+    profile
 }
 
 export default userCtr

@@ -5,4 +5,8 @@ const encryptPass = async (pass) => {
     return encryptedPass
 };
 
-export default encryptPass
+const comparePassword = async (pass1, pass2) => {
+    return await bcrypt.compare(pass1, pass2)
+}
+
+export { encryptPass, comparePassword }

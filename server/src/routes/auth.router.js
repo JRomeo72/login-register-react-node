@@ -5,5 +5,6 @@ let router = Router();
 
 router.post('/register', authCtr.register);
 router.post('/login', authCtr.login);
+router.post('/logout', authCtr.logout)
 
 export default router

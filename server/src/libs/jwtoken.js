@@ -1,25 +1,35 @@
 import jwt from 'jsonwebtoken';
 
-const getToken = (credentials, secretKey) => {
+export const createToken = (credentials, secretKey) => {
 
     return new Promise((resolve, reject) => {
 
         jwt.sign(
             {
-                id: credentials._id,
+                id: credentials.id,
                 username: credentials.username,
                 email: credentials.email
             },
             secretKey,
             {
-                expiresIn: '15m'
+                expiresIn: '1m'
             },
             (err, token) => {
-                if(err) reject(err);
+                if(err) reject(new Error("No se pudeo generer Token"));
                 resolve(token)
             }
         )
     })
 };
 
-export default getToken
+export const verifyToken = (token, secretKey) => {
+
+    return new Promise((resolve, reject) => {
+
+        jwt.verify(token, secretKey, (err, credentials) => {
+            if(err) reject(new Error("Token invalido"));
+            resolve(credentials)
+        })
+
+    })
+}
